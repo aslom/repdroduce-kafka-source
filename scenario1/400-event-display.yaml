@@ -20,4 +20,4 @@ spec:
           - name: print
             value: "true"
           - name: scraper
-            value: "https://kafkascraper-k9.o7-111a9c298953d78649164b7e8394bcdc-0000.us-south.containers.appdomain.cloud"
+            value: "http://kafkascraper"

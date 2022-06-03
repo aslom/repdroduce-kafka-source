@@ -1,9 +1,49 @@
-apiVersion: serving.knative.dev/v1
-kind: Service
+---
+apiVersion: apps/v1
+kind: Deployment
 metadata:
   name: kafkascraper
 spec:
+  replicas: 1
+  selector:
+    matchLabels: &labels
+      app: kafkascraper
   template:
+    metadata:
+      labels: *labels
     spec:
       containers:
-        - image: ko://github.com/aslom/repdroduce-kafka-source/KafkaScraper
+        - name: kafkascraper
+          image: ko://github.com/aslom/repdroduce-kafka-source/KafkaScraper
+          imagePullPolicy: Always
+          env:
+          - name: BROKERS
+            value: "my-cluster-kafka-bootstrap.kafka:9093"
+          - name: TOPIC
+            value: "topic30"
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "0.5G"
+            limits:
+              cpu: "2"
+              memory: "8G"
+          ports:
+          - containerPort: 8080
+            name: http
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafkascraper
+  annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port:   '8001'
+spec:
+  selector:
+    app: kafkascraper
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      name: http
