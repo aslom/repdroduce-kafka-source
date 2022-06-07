@@ -16,11 +16,6 @@ spec:
         - name: kafkascraper
           image: ko://github.com/aslom/repdroduce-kafka-source/KafkaScraper
           imagePullPolicy: Always
-          env:
-          - name: BROKERS
-            value: "my-cluster-kafka-bootstrap.kafka:9093"
-          - name: TOPIC
-            value: "topic30"
           resources:
             requests:
               cpu: "0.5"
