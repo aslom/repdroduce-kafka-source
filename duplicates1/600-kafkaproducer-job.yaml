@@ -1,0 +1,28 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: duplicates1-kafkaproduce-job1
+spec:
+  template:
+    spec:
+      containers:
+      - name: duplicates1-kafkaproduce-job1
+        image: ko://github.com/aslom/repdroduce-kafka-source/KafkaProducer
+        imagePullPolicy: Always
+        env:
+        - name: BROKERS
+          value: "my-cluster-kafka-bootstrap.kafka:9093"
+        - name: TOPIC
+          value: "topic50"
+        - name: EVENTCT
+          value: "5000"
+        resources:
+          requests:
+            cpu: "1"
+            memory: "2G"
+          limits:
+            cpu: "1"
+            memory: "8G"
+      restartPolicy: Never
+  backoffLimit: 2

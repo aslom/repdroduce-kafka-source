@@ -16,7 +16,15 @@ To run scenario as provided:
 ko apply -f scenario1
 ```
 
-TO modify scenario copy `scenario1` folder and modify it.
+TO run scenario again make sure to delete previous job:
+
+```
+ kubectl delete job scenario1-kafkaproduce-job1
+```
+
+THen you can run `ko apply` again and see new results.
+
+To modify scenario copy `scenario1` folder and modify it.
 In particular edit `scenario2/600-kafkaproducer-job.yaml` to set your workload parameters. You may also want to modify
 
 Run
