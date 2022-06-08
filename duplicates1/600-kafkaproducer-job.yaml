@@ -14,7 +14,7 @@ spec:
         - name: BROKERS
           value: "my-cluster-kafka-bootstrap.kafka:9092"
         - name: TOPIC
-          value: "topic50"
+          value: "topic50a"
         - name: EVENTCT
           value: "5000"
         resources:
