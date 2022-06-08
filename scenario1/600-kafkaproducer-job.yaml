@@ -12,15 +12,15 @@ spec:
         imagePullPolicy: Always
         env:
         - name: BROKERS
-          value: "my-cluster-kafka-bootstrap.kafka:9093"
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
         - name: TOPIC
           value: "topic30"
         - name: EVENTCT
           value: "1"
         resources:
           requests:
-            cpu: "1"
-            memory: "2G"
+            cpu: "0.5"
+            memory: "0.5G"
           limits:
             cpu: "1"
             memory: "8G"

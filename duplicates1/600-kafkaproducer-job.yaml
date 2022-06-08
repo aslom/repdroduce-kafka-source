@@ -12,7 +12,7 @@ spec:
         imagePullPolicy: Always
         env:
         - name: BROKERS
-          value: "my-cluster-kafka-bootstrap.kafka:9093"
+          value: "my-cluster-kafka-bootstrap.kafka:9092"
         - name: TOPIC
           value: "topic50"
         - name: EVENTCT

@@ -24,6 +24,7 @@ var brokers = getenv("BROKERS", "localhost:9093")
 
 // var username = getenv("USERNAME", "token")
 // var password = getenv("PASSWORD", "")
+var useTLS = getenv("ENABLE_TLS", "") == "true"
 var consumergroup = getenv("CONSUMERGROUP", "kafkasourcetestproducer")
 var ratedeviation, _ = strconv.ParseInt(getenv("RATEDEVIATION", "2"), 10, 64)
 var rate, _ = strconv.ParseInt(getenv("RATE", "3000"), 10, 64)
@@ -246,15 +247,17 @@ func kafkaConfig() (kafkaConfig *sarama.Config, err error) {
 	kafkaConfig.Producer.Return.Successes = true
 	// kafkaConfig.Net.SASL.Enable = true
 	// kafkaConfig.Net.SASL.Mechanism = sarama.SASLTypePlaintext
-	kafkaConfig.Net.TLS.Enable = true
-	kafkaConfig.Net.TLS.Config = &tls.Config{
-		MinVersion:               tls.VersionTLS12,
-		MaxVersion:               tls.VersionTLS12,
-		PreferServerCipherSuites: true,
-		InsecureSkipVerify:       true,
-	}
 	// kafkaConfig.Net.SASL.User = user
 	// kafkaConfig.Net.SASL.Password = apiKey
+	if useTLS {
+		kafkaConfig.Net.TLS.Enable = true
+		kafkaConfig.Net.TLS.Config = &tls.Config{
+			MinVersion:               tls.VersionTLS12,
+			MaxVersion:               tls.VersionTLS12,
+			PreferServerCipherSuites: true,
+			InsecureSkipVerify:       true,
+		}
+	}
 
 	return kafkaConfig, nil
 }
