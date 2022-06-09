@@ -39,6 +39,36 @@ var stats struct {
 	Mu sync.Mutex
 }
 
+func main() {
+	useAsync := true
+	if useAsync {
+		async()
+	} else {
+		c := make(chan os.Signal)
+		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
+		go func() {
+			<-c
+			time.Sleep(3 * time.Second)
+			fmt.Println("Keyboard interrupted. Exit Program")
+			fmt.Println("total produced messages: ", totalMsg)
+			fmt.Println("average burst rate is: ", int(totalMsg)/totalBurst)
+			fmt.Println("average rest duration is: ", totalRestDur/totalBurst)
+			fmt.Println("average send duration is: ", totalSendDur/totalBurst)
+			os.Exit(1)
+		}()
+		go loopPrint()
+		config, err := kafkaConfig()
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		producer, err := sarama.NewSyncProducer([]string{brokers}, config)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		produce(int(rate), int(ratedeviation), int(restduration), int(restdurationdeviation), int(sendduration), int(senddurationdeviation), &producer)
+	}
+}
+
 func async() {
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGKILL)
@@ -103,36 +133,6 @@ producerLoop:
 		default:
 			time.Sleep(time.Duration(0) * time.Millisecond)
 		}
-	}
-}
-
-func main() {
-	useAsync := true
-	if useAsync {
-		async()
-	} else {
-		c := make(chan os.Signal)
-		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-		go func() {
-			<-c
-			time.Sleep(3 * time.Second)
-			fmt.Println("Keyboard interrupted. Exit Program")
-			fmt.Println("total produced messages: ", totalMsg)
-			fmt.Println("average burst rate is: ", int(totalMsg)/totalBurst)
-			fmt.Println("average rest duration is: ", totalRestDur/totalBurst)
-			fmt.Println("average send duration is: ", totalSendDur/totalBurst)
-			os.Exit(1)
-		}()
-		go loopPrint()
-		config, err := kafkaConfig()
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		producer, err := sarama.NewSyncProducer([]string{brokers}, config)
-		if err != nil {
-			fmt.Println(err.Error())
-		}
-		produce(int(rate), int(ratedeviation), int(restduration), int(restdurationdeviation), int(sendduration), int(senddurationdeviation), &producer)
 	}
 }
 

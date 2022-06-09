@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eventdisplay
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &labels
+      app: eventdisplay
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      containers:
+        - name: eventdisplay
+          image: ko://github.com/aslom/repdroduce-kafka-source/customizeEventDisplay
+          env:
+          - name: displayConcurrentConnections
+            value: "true"
+          - name: cloudevent
+            value: "true"
+          - name: forward
+            value: "true"
+          - name: delay
+            value: "10"
+          - name: print
+            value: "true"
+          - name: scraper
+            value: "http://kafkascraper"
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "0.5G"
+            limits:
+              cpu: "2"
+              memory: "8G"
+          ports:
+          - containerPort: 8080
+            name: http
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: eventdisplay
+  annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port:   '8001'
+spec:
+  selector:
+    app: eventdisplay
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      name: http
