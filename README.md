@@ -1,4 +1,4 @@
-# repdroduce-kafka-source
+# reproduce-kafka-source
 
 Reproducing test setup for https://github.com/knative-sandbox/eventing-kafka-broker/issues/2240
 
