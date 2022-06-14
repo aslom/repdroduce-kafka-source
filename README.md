@@ -15,7 +15,7 @@ To run scenario as provided:
 ko apply -f scenario1
 ```
 
-TO run scenario again make sure to delete previous job:
+To run scenario again make sure to delete previous job:
 
 ```
  kubectl delete job scenario1-kafkaproduce-job1
