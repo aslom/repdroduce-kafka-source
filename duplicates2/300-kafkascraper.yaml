@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafkascraper
+spec:
+  replicas: 1
+  selector:
+    matchLabels: &labels
+      app: kafkascraper
+  template:
+    metadata:
+      labels: *labels
+    spec:
+      containers:
+        - name: kafkascraper
+          image: ko://github.com/aslom/repdroduce-kafka-source/KafkaScraper
+          imagePullPolicy: Always
+          resources:
+            requests:
+              cpu: "0.5"
+              memory: "0.5G"
+            limits:
+              cpu: "2"
+              memory: "8G"
+          ports:
+          - containerPort: 8080
+            name: http
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: kafkascraper
+  annotations:
+      prometheus.io/scrape: 'true'
+      prometheus.io/port:   '8001'
+spec:
+  selector:
+    app: kafkascraper
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      name: http

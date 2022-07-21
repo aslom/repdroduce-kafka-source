@@ -1,0 +1,16 @@
+---
+apiVersion: sources.knative.dev/v1beta1
+kind: KafkaSource
+metadata:
+  name: kafka-src50
+spec:
+  consumerGroup: kafka-src50c
+  bootstrapServers:
+  - my-cluster-kafka-bootstrap.kafka:9092 # note the kafka namespace
+  topics:
+  - topic50c
+  sink:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: eventdisplay
